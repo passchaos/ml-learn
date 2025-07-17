@@ -1,0 +1,3 @@
+[submodule "dl-learn/DeepLearningFromScratch"]
+	path = dl-learn/DeepLearningFromScratch
+	url = git@github.com:passchaos/DeepLearningFromScratch.git

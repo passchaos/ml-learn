@@ -17,3 +17,10 @@ plt.ylabel("y")
 plt.title("sin & cos")
 plt.legend()
 plt.show()
+
+# %%
+from matplotlib.image import imread
+img = imread('DeepLearningFromScratch/dataset/lena.png')
+
+plt.imshow(img)
+plt.show()
