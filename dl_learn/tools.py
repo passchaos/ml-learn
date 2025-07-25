@@ -3,6 +3,9 @@ import numpy as np
 def sigmoid(x: np.ndarray):
     return 1 / ( 1 + np.exp(-x))
 
+def sigmoid_grad(x):
+    return (1.0 - sigmoid(x)) * sigmoid(x)
+
 def step(x: np.ndarray):
     return np.array(x > 0, dtype=np.int8)
 
@@ -10,6 +13,11 @@ def relu(x: np.ndarray):
     return np.maximum(x, 0)
 
 def softmax(x: np.ndarray):
+    if x.ndim == 2:
+        x = x - np.max(x, axis=1, keepdims=True)
+        y = np.exp(x) / np.sum(np.exp(x), axis=1, keepdims=True)
+        return y
+
     c = np.max(x)
     exp_a = np.exp(x - c)
     sum_exp_a = np.sum(exp_a)
@@ -37,10 +45,10 @@ def numerical_gradient(f, x):
     h = 1e-4
     grad = np.zeros_like(x)
 
-    it = np.nditer(x, flags=['c_index'])
+    it = np.nditer(x, flags=['multi_index'])
 
     while not it.finished:
-        idx = it.index
+        idx = it.multi_index
 
         tmp_value = x[idx]
 
