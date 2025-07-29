@@ -1,3 +1,3 @@
 from .DeepLearningFromScratch import mnist
 
-__all__ = ['mnist']
+__all__ = ['mnist', 'autodiff', 'tools']

@@ -30,29 +30,26 @@ class AddLayer:
 
 class ReluLayer:
     def __init__(self):
-        pass
+        self.mask = None
 
     def forward(self, x):
-        v = x.copy()
-        for i in 0..len(v):
-            if v[i] < 0:
-                v[i] = 0
+        self.mask = (x <= 0)
+        out = x.copy()
+        out[self.mask] = 0
 
-        v
+        return out
 
     def backward(self, dout):
-        for i in 0..len(dout):
-            if dout[i] < 0:
-                dout[i] = 0
+        dout[self.mask] = 0
 
-        dout
+        return dout
 
 class Sigmoid:
     def __init__(self):
         pass
 
     def forward(self, x):
-        out = 1 / (1 + np.exp(-x))
+        out = tools.sigmoid(x)
         self.out = out
 
         return out
@@ -64,14 +61,22 @@ class Affine:
     def __init__(self, W, b):
         self.W = W
         self.b = b
+        self.x = None
+        self.dW = None
+        self.db = None
 
     def forward(self, x):
+        self.x = x
         return np.dot(x, self.W) + self.b
 
     def backward(self, dout):
-        return np.dot(dout, self.W.T)
+        dx = np.dot(dout, self.W.T)
+        self.dW = np.dot(self.x.T, dout)
+        self.db = np.sum(dout, axis=0)
 
-def SoftmaxWithLoss:
+        return dx
+
+class SoftmaxWithLoss:
     def __init__(self):
         self.y = None
         self.t = None
