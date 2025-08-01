@@ -4,6 +4,14 @@ import matplotlib.pyplot as plt
 
 from collections import OrderedDict
 
+class SGD:
+    def __init__(self, lr=0.01):
+        self.lr = lr
+
+    def update(self, params, grads):
+        for key in params.keys():
+            params[key] -= self.lr * grads[key]
+
 class SimpleNet:
     def __init__(self, input_size, hidden_size, output_size, weight_init_std=0.01):
         self.params = {}
@@ -122,6 +130,8 @@ if __name__ == "__main__":
 
     net = SimpleNet(784, 50, 10)
 
+    optimizer = SGD()
+
     for i in range(iters_num):
         batch_mask = np.random.choice(train_size, batch_size)
         x_batch = x_train[batch_mask]
@@ -134,8 +144,9 @@ if __name__ == "__main__":
             diff = np.average(np.abs(grad[key] - grad1[key]))
             print(key + ":" + str(diff))
 
-        for key in ['W1', 'b1', 'W2', 'b2']:
-            net.params[key] -= lr * grad[key]
+        optimizer.update(net.params, grad)
+        # for key in ['W1', 'b1', 'W2', 'b2']:
+        #     net.params[key] -= lr * grad[key]
 
         loss = net.loss(x_batch, t_batch)
         print(f"idx: {i} loss: {loss}")
