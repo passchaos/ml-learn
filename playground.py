@@ -46,11 +46,12 @@ def activation_hist():
         if i != 0:
             x = activations[i-1]
 
-        w = np.random.randn(node_num, node_num) / np.sqrt(node_num)
+        w = np.random.randn(node_num, node_num) * np.sqrt(2) / np.sqrt(node_num)
 
         z = np.dot(x, w)
         # a = tools.sigmoid(z)
-        a = np.tanh(z)
+        # a = np.tanh(z)
+        a = tools.relu(z)
         activations[i] = a
 
     for i, a in activations.items():
