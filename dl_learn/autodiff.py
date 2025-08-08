@@ -70,6 +70,8 @@ class Affine:
         return np.dot(x, self.W) + self.b
 
     def backward(self, dout):
+        assert self.x is not None
+
         dx = np.dot(dout, self.W.T)
         self.dW = np.dot(self.x.T, dout)
         self.db = np.sum(dout, axis=0)
@@ -87,7 +89,10 @@ class SoftmaxWithLoss:
 
         return tools.cross_entropy_error(self.y, t)
 
-    def backward(self, dout=1):
+    def backward(self, dout=1.0):
+        assert self.y is not None
+        assert self.t is not None
+
         batch_size = self.t.shape[0]
 
         return (self.y - self.t) / batch_size

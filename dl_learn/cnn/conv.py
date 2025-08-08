@@ -48,7 +48,7 @@ def convolution(input, filter, bias, stride=1, pad=0):
 
 # left: 4x4 matrix
 # right: 3x3 matrix
-def im2col(a):
+def im2col(input, f_n, f_channel, f_height, ):
     pass
 
 if __name__ == "__main__":
