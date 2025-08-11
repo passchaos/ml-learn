@@ -1,5 +1,46 @@
 import numpy as np
 
+def im2col(input, f_height, f_width, stride=1, pad=0):
+    input = np.pad(input, ((0, 0), (0, 0), (pad, pad), (pad, pad)), mode='constant')
+
+    input_n, i_c, i_height, i_width = input.shape
+
+    width_step = (i_width - f_width) // stride + 1
+    height_step = (i_height - f_height) // stride + 1
+
+    res = []
+    for n in range(input_n):
+        a1 = []
+
+        for h_step in range(height_step):
+            for w_step in range(width_step):
+                a2 = []
+                for c in range(i_c):
+                    for h in range(f_height):
+                        for w in range(f_width):
+                            a2.append(input[n, c, h + h_step, w + w_step])
+                a2 = np.stack(a2)
+                a1.append(a2)
+        a1 = np.stack(a1)
+        res.append(a1)
+    return np.stack(res)
+
+def convolution_new(input, filter, bias, stride=1, pad=0):
+    FN, C, FH, FW = filter.shape
+    N, C, H, W = input.shape
+
+    out_h = (H + 2*pad - FH) // stride + 1
+    out_w = (W + 2*pad - FW) // stride + 1
+
+    col = im2col(input, FH, FW, stride, pad)
+    col_w = filter.reshape(FN, -1).T
+    out = np.dot(col, col_w) + bias
+
+    out = out.reshape(N, out_h, out_w, FN).transpose(0, 3, 1, 2)
+
+    return out
+
+
 def convolution(input, filter, bias, stride=1, pad=0):
     input = np.pad(input, ((0, 0), (0, 0), (pad, pad), (pad, pad)), mode='constant')
 
@@ -44,13 +85,6 @@ def convolution(input, filter, bias, stride=1, pad=0):
     return np.stack(result)
 
 
-
-
-# left: 4x4 matrix
-# right: 3x3 matrix
-def im2col(input, f_n, f_channel, f_height, ):
-    pass
-
 if __name__ == "__main__":
     # a = np.random.rand(4, 4)
     # b = np.random.rand(3, 3)
@@ -68,5 +102,10 @@ if __name__ == "__main__":
     bias = np.array([[[1]], [[2]]])
 
     print(f"shape info: a= {a.shape} b= {b.shape}")
+
     res = convolution(a, b, bias, pad=1)
+    bias = np.array([1, 2])
+    res_1 = convolution_new(a, b, bias, pad=1)
+
     print(f"conv res: {res}")
+    print(f"conv1 res: {res_1}")
