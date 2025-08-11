@@ -14,12 +14,8 @@ def im2col(input, f_height, f_width, stride=1, pad=0):
 
         for h_step in range(height_step):
             for w_step in range(width_step):
-                a2 = []
-                for c in range(i_c):
-                    for h in range(f_height):
-                        for w in range(f_width):
-                            a2.append(input[n, c, h + h_step, w + w_step])
-                a2 = np.stack(a2)
+                window = input[n, :, h_step:(h_step + f_height), w_step:(w_step + f_width)]
+                a2 = window.reshape(-1)
                 a1.append(a2)
         a1 = np.stack(a1)
         res.append(a1)
