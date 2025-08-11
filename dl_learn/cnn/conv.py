@@ -1,5 +1,17 @@
 import numpy as np
 
+class Convolution:
+    def __init__(self, W, b, stride=1, pad=0):
+        self.W = W
+        self.b = b
+        self.stride = stride
+        self.pad = pad
+
+    def forward(self, x):
+        out = convolution_new(x, self.W, self.b, self.stride, self.pad)
+
+        return out
+
 def im2col(input, f_height, f_width, stride=1, pad=0):
     input = np.pad(input, ((0, 0), (0, 0), (pad, pad), (pad, pad)), mode='constant')
 
@@ -19,6 +31,7 @@ def im2col(input, f_height, f_width, stride=1, pad=0):
                 a1.append(a2)
         a1 = np.stack(a1)
         res.append(a1)
+
     return np.stack(res)
 
 def convolution_new(input, filter, bias, stride=1, pad=0):
