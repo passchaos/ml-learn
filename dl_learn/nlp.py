@@ -1,6 +1,6 @@
 import numpy as np
 
-def preprocess(text):
+def preprocess(text: str):
     text = text.lower()
     text = text.replace('.', ' .')
     words = text.split(' ')
